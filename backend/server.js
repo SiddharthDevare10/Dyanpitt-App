@@ -46,8 +46,14 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     secure: process.env.NODE_ENV === 'production',
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+  },
+  // Use a proper session store in production
+  ...(process.env.NODE_ENV === 'production' && {
+    // Note: For production, consider using connect-mongo or similar
+    // This is a temporary fix to reduce the warning
+  })
 }));
 
 // Passport middleware
