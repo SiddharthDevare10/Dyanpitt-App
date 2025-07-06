@@ -75,6 +75,28 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// API info route for browser testing
+app.get('/api', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Dyanpitt API is running',
+    version: '1.0.0',
+    endpoints: {
+      health: 'GET /api/health',
+      auth: {
+        register: 'POST /api/auth/register',
+        login: 'POST /api/auth/login',
+        sendOtp: 'POST /api/auth/send-otp',
+        verifyOtp: 'POST /api/auth/verify-otp',
+        forgotPassword: 'POST /api/auth/forgot-password',
+        me: 'GET /api/auth/me (requires auth)',
+        logout: 'POST /api/auth/logout (requires auth)'
+      }
+    },
+    note: 'Most endpoints require POST requests with JSON data'
+  });
+});
+
 // Error handling middleware
 app.use((err, req, res, _next) => {
   console.error(err.stack);
