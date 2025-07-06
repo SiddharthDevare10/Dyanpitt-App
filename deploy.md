@@ -185,9 +185,36 @@ After applying these fixes:
 
 ## 🆘 Still Having Issues?
 
+### **Railway Deploying Caddy Instead of Node.js?**
+
+**Symptoms**: Build logs show "caddy" and "npm run build" instead of Node.js
+**Solution**:
+1. **Railway Dashboard** → Your Project → **Settings**
+2. **Root Directory**: Must be set to `backend`
+3. **Start Command**: Set to `node server.js`
+4. **Build Command**: Leave empty or remove
+5. **Redeploy**
+
+### **Application Still Not Responding?**
+
 1. **Check Railway Logs**: Deployment → Logs tab
+   - Look for "🚀 Server running on port 3000"
+   - Should NOT see Caddy server logs
 2. **Check Vercel Logs**: Functions → View logs
 3. **Browser Console**: Look for specific error messages
 4. **Database Status**: Verify MongoDB service is running in Railway
+5. **Environment Variables**: Verify all required vars are set
+
+### **Quick Diagnostic Commands**:
+```bash
+# Test backend health
+curl https://[your-railway-app].railway.app/api/health
+
+# Check if Railway is running Node.js (should return JSON)
+curl https://[your-railway-app].railway.app/api
+
+# Test CORS (from browser console on your frontend)
+fetch('https://[your-railway-app].railway.app/api/health')
+```
 
 **These fixes resolve the "Application failed to respond" error completely! 🚀**
