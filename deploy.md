@@ -26,7 +26,11 @@ This guide contains the corrected configuration to fix the **"Application failed
 ### 1.1 Deploy to Railway
 1. Go to [railway.app](https://railway.app) → Sign up with GitHub
 2. **New Project** → **Deploy from GitHub repo** → Select your repo
-3. Choose **backend** folder → Deploy
+3. **CRITICAL**: In deployment settings:
+   - **Root Directory**: Set to `backend` (not empty)
+   - **Build Command**: Leave empty
+   - **Start Command**: `node server.js`
+4. Deploy
 
 ### 1.2 Add MongoDB Database (CRITICAL)
 1. In your Railway project → Click **"+ New"**
@@ -118,6 +122,7 @@ curl https://[your-railway-app].railway.app/api/health
 | Error | Root Cause | Solution Applied |
 |-------|------------|------------------|
 | **Application failed to respond** | Invalid MongoDB URI | ✅ Use Railway auto-generated MongoDB URI |
+| **Railway deploys Caddy instead of Node.js** | Wrong root directory or detection | ✅ Set root directory to `backend` and proper start command |
 | **CORS Error** | Wrong `FRONTEND_URL` | ✅ Set exact Vercel URL in Railway |
 | **Database connection failed** | Local Docker reference | ✅ Railway MongoDB service added |
 | **Session/Auth issues** | Weak secrets | ✅ Strong generated secrets provided |
