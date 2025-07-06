@@ -64,10 +64,10 @@ app.use(passport.session());
 connectDB();
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
 
 // Health check route
-app.get('/api/health', (req, res) => {
+app.get('/health', (req, res) => {
   res.json({ 
     status: 'OK', 
     message: 'Server is running',
@@ -76,21 +76,21 @@ app.get('/api/health', (req, res) => {
 });
 
 // API info route for browser testing
-app.get('/api', (req, res) => {
+app.get('/', (req, res) => {
   res.json({
     success: true,
     message: 'Dyanpitt API is running',
     version: '1.0.0',
     endpoints: {
-      health: 'GET /api/health',
+      health: 'GET /health',
       auth: {
-        register: 'POST /api/auth/register',
-        login: 'POST /api/auth/login',
-        sendOtp: 'POST /api/auth/send-otp',
-        verifyOtp: 'POST /api/auth/verify-otp',
-        forgotPassword: 'POST /api/auth/forgot-password',
-        me: 'GET /api/auth/me (requires auth)',
-        logout: 'POST /api/auth/logout (requires auth)'
+        register: 'POST /auth/register',
+        login: 'POST /auth/login',
+        sendOtp: 'POST /auth/send-otp',
+        verifyOtp: 'POST /auth/verify-otp',
+        forgotPassword: 'POST /auth/forgot-password',
+        me: 'GET /auth/me (requires auth)',
+        logout: 'POST /auth/logout (requires auth)'
       }
     },
     note: 'Most endpoints require POST requests with JSON data'
@@ -116,12 +116,12 @@ app.use('*', (req, res) => {
     requestedPath: req.originalUrl,
     method: req.method,
     availableRoutes: [
-      'GET /api/health',
-      'POST /api/auth/register',
-      'POST /api/auth/login',
-      'GET /api/auth/me',
-      'POST /api/auth/send-otp',
-      'POST /api/auth/verify-otp'
+      'GET /health',
+      'POST /auth/register',
+      'POST /auth/login',
+      'GET /auth/me',
+      'POST /auth/send-otp',
+      'POST /auth/verify-otp'
     ]
   });
 });
