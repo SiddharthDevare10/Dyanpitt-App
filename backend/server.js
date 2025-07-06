@@ -85,11 +85,22 @@ app.use((err, req, res, _next) => {
   });
 });
 
-// 404 handler
+// 404 handler with debugging info
 app.use('*', (req, res) => {
+  console.log(`404 - Route not found: ${req.method} ${req.originalUrl}`);
   res.status(404).json({ 
     success: false, 
-    message: 'Route not found' 
+    message: 'Route not found',
+    requestedPath: req.originalUrl,
+    method: req.method,
+    availableRoutes: [
+      'GET /api/health',
+      'POST /api/auth/register',
+      'POST /api/auth/login',
+      'GET /api/auth/me',
+      'POST /api/auth/send-otp',
+      'POST /api/auth/verify-otp'
+    ]
   });
 });
 
