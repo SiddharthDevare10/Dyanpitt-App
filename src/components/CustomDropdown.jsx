@@ -1,72 +1,121 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-export default function CustomDropdown({ 
-  name, 
+const CustomDropdown = ({ 
+  options = [], 
   value, 
   onChange, 
-  options, 
-  placeholder, 
-  className, 
-  error 
-}) {
+  placeholder = "Select an option",
+  disabled = false,
+  className = "",
+  searchable = false,
+  clearable = false
+}) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const dropdownRef = useRef(null);
+
+  // Filter options based on search term
+  const filteredOptions = searchable 
+    ? options.filter(option => 
+        option.label.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : options;
 
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
+        setSearchTerm('');
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleSelect = (optionValue) => {
-    onChange({
-      target: {
-        name: name,
-        value: optionValue
-      }
-    });
+  const handleOptionClick = (option) => {
+    onChange(option);
     setIsOpen(false);
+    setSearchTerm('');
+  };
+
+  const handleClear = (e) => {
+    e.stopPropagation();
+    onChange(null);
   };
 
   const selectedOption = options.find(option => option.value === value);
 
   return (
-    <div className="custom-dropdown-wrapper" ref={dropdownRef}>
+    <div className={`custom-dropdown ${className}`} ref={dropdownRef}>
       <div 
-        className={`custom-dropdown ${className} ${error ? 'input-error' : ''} ${isOpen ? 'open' : ''}`}
-        onClick={() => setIsOpen(!isOpen)}
+        className={`dropdown-header ${disabled ? 'disabled' : ''} ${isOpen ? 'open' : ''}`}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
       >
-        <span className="custom-dropdown-selected">
+        <span className="dropdown-value">
           {selectedOption ? selectedOption.label : placeholder}
         </span>
-        <span className="custom-dropdown-arrow">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polyline points="6,9 12,15 18,9"></polyline>
-          </svg>
-        </span>
-      </div>
-      
-      {isOpen && (
-        <div className="custom-dropdown-options">
-          {options.map((option) => (
-            <div
-              key={option.value}
-              className={`custom-dropdown-option ${value === option.value ? 'selected' : ''}`}
-              onClick={() => handleSelect(option.value)}
+        <div className="dropdown-actions">
+          {clearable && selectedOption && (
+            <button 
+              type="button"
+              className="clear-btn"
+              onClick={handleClear}
+              disabled={disabled}
             >
-              {option.label}
+              ×
+            </button>
+          )}
+          <span className={`dropdown-arrow ${isOpen ? 'up' : 'down'}`}>
+            ▼
+          </span>
+        </div>
+      </div>
+
+      {isOpen && (
+        <div className="dropdown-menu">
+          {searchable && (
+            <div className="dropdown-search">
+              <input
+                type="text"
+                placeholder="Search options..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onClick={(e) => e.stopPropagation()}
+              />
             </div>
-          ))}
+          )}
+          
+          <div className="dropdown-options">
+            {filteredOptions.length > 0 ? (
+              filteredOptions.map((option) => (
+                <div
+                  key={option.value}
+                  className={`dropdown-option ${option.value === value ? 'selected' : ''} ${option.disabled ? 'disabled' : ''}`}
+                  onClick={() => !option.disabled && handleOptionClick(option)}
+                >
+                  <span className="option-label">{option.label}</span>
+                  {option.description && (
+                    <span className="option-description">{option.description}</span>
+                  )}
+                  {option.badge && (
+                    <span className={`option-badge ${option.badge.type || ''}`}>
+                      {option.badge.text}
+                    </span>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="dropdown-no-options">
+                {searchable && searchTerm ? 'No matching options' : 'No options available'}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
   );
-}
+};
+
+export default CustomDropdown;

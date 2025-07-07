@@ -15,25 +15,13 @@ const authRoutes = require('./routes/auth');
 
 const app = express();
 
-// CORS configuration
+// CORS configuration for local development
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
   'http://127.0.0.1:5173',
-  'https://dyanpitt.vercel.app', // Explicit Vercel URL
-  process.env.FRONTEND_URL
-].filter(Boolean);
-
-// Add common Vercel patterns for production
-if (process.env.NODE_ENV === 'production') {
-  allowedOrigins.push(/\.vercel\.app$/);
-  allowedOrigins.push(/\.railway\.app$/);
-}
-
-console.log('🔧 CORS Configuration:');
-console.log('📍 Allowed Origins:', allowedOrigins);
-console.log('🌐 FRONTEND_URL:', process.env.FRONTEND_URL);
-console.log('🏗️ NODE_ENV:', process.env.NODE_ENV);
+  'http://localhost:5174'
+];
 
 app.use(cors({
   origin: allowedOrigins,
@@ -46,21 +34,16 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session configuration
+// Session configuration for local development
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  secret: process.env.SESSION_SECRET || 'dev-secret-key-for-local-testing',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: false,
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
-  },
-  // Use a proper session store in production
-  ...(process.env.NODE_ENV === 'production' && {
-    // Note: For production, consider using connect-mongo or similar
-    // This is a temporary fix to reduce the warning
-  })
+    sameSite: 'lax'
+  }
 }));
 
 // Passport middleware
@@ -136,6 +119,6 @@ app.use('*', (req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📱 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
   console.log(`🔗 API Base URL: http://localhost:${PORT}/api`);
+  console.log(`📱 Frontend URL: http://localhost:5173`);
 });

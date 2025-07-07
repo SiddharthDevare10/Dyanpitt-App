@@ -1,8 +1,26 @@
 import axios from 'axios';
 import Constants from 'expo-constants';
 
-// Use your backend URL - update this to match your deployment
-const API_BASE_URL = Constants.expoConfig?.extra?.apiUrl || 'http://localhost:5000/api';
+// API URL configuration for different environments
+const getApiUrl = () => {
+  // Check if we have a configured API URL
+  if (Constants.expoConfig?.extra?.apiUrl) {
+    return Constants.expoConfig.extra.apiUrl;
+  }
+  
+  // Default URLs based on environment
+  if (__DEV__) {
+    // Development mode
+    return 'http://10.0.2.2:5001/api'; // Android emulator
+    // For physical device, use your computer's IP:
+    // return 'http://192.168.1.100:5001/api';
+  }
+  
+  // Production fallback
+  return 'https://your-production-api.com/api';
+};
+
+const API_BASE_URL = getApiUrl();
 
 class ApiService {
   constructor() {

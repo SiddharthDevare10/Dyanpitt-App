@@ -1,219 +1,186 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// API service for frontend communication with backend
+const API_BASE_URL = process.env.VITE_API_URL || 'http://localhost:5001/api';
 
 class ApiService {
   constructor() {
     this.baseURL = API_BASE_URL;
+    this.token = localStorage.getItem('authToken');
   }
 
-  // Get auth token from localStorage
-  getToken() {
-    return localStorage.getItem('authToken');
-  }
-
-  // Set auth token in localStorage
+  // Set authentication token
   setToken(token) {
-    localStorage.setItem('authToken', token);
+    this.token = token;
+    if (token) {
+      localStorage.setItem('authToken', token);
+    } else {
+      localStorage.removeItem('authToken');
+    }
   }
 
-  // Remove auth token from localStorage
-  removeToken() {
-    localStorage.removeItem('authToken');
-  }
-
-  // Get auth headers
-  getAuthHeaders() {
-    const token = this.getToken();
-    return {
+  // Get authentication headers
+  getHeaders() {
+    const headers = {
       'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` })
     };
+    
+    if (this.token) {
+      headers.Authorization = `Bearer ${this.token}`;
+    }
+    
+    return headers;
   }
 
-  // Generic API request method
+  // Generic request method
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
-    
     const config = {
-      headers: this.getAuthHeaders(),
-      ...options
+      headers: this.getHeaders(),
+      ...options,
     };
 
     try {
       const response = await fetch(url, config);
       const data = await response.json();
-
+      
       if (!response.ok) {
-        throw new Error(data.message || `HTTP error! status: ${response.status}`);
+        throw new Error(data.message || 'Request failed');
       }
-
+      
       return data;
     } catch (error) {
+      console.error('API Request Error:', error);
       throw error;
     }
   }
 
   // Authentication methods
-  async login(loginData) {
-    const response = await this.request('/auth/login', {
+  async register(userData) {
+    return this.request('/auth/register', {
       method: 'POST',
-      body: JSON.stringify(loginData)
+      body: JSON.stringify(userData),
     });
-
-    if (response.success && response.token) {
-      this.setToken(response.token);
-    }
-
-    return response;
   }
 
-  async register(registrationData) {
-    // In a real app, the backend would generate the Dyanpitt ID
-    // and store all user data including email and dyanpittId mapping
-    const response = await this.request('/auth/register', {
+  async login(credentials) {
+    const response = await this.request('/auth/login', {
       method: 'POST',
-      body: JSON.stringify(registrationData)
+      body: JSON.stringify(credentials),
     });
-
-    if (response.success && response.token) {
+    
+    if (response.token) {
       this.setToken(response.token);
-      
-      // Store user data locally for demo purposes
-      // In production, this would be handled by the backend
-      localStorage.setItem('userData', JSON.stringify({
-        email: registrationData.email,
-        dyanpittId: registrationData.dyanpittId,
-        fullName: registrationData.fullName,
-        phoneNumber: registrationData.phoneNumber
-      }));
     }
-
+    
     return response;
   }
 
   async logout() {
     try {
-      await this.request('/auth/logout', {
-        method: 'POST'
-      });
-    } catch {
-      // Silently handle logout errors
+      await this.request('/auth/logout', { method: 'POST' });
     } finally {
-      this.removeToken();
+      this.setToken(null);
     }
   }
 
-  async getCurrentUser() {
-    return this.request('/auth/me');
+  async sendOTP(email) {
+    return this.request('/auth/send-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  }
+
+  async verifyOTP(email, otp) {
+    return this.request('/auth/verify-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email, otp }),
+    });
   }
 
   async forgotPassword(email) {
     return this.request('/auth/forgot-password', {
       method: 'POST',
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ email }),
     });
   }
 
-  // Verify reset OTP
-  async verifyResetOtp(email, otp) {
-    return this.request('/auth/verify-reset-otp', {
-      method: 'POST',
-      body: JSON.stringify({ email, otp })
-    });
-  }
-
-  // Reset password
   async resetPassword(email, otp, newPassword) {
     return this.request('/auth/reset-password', {
       method: 'POST',
-      body: JSON.stringify({ email, otp, newPassword })
+      body: JSON.stringify({ email, otp, newPassword }),
     });
   }
 
-  async checkEmailExists(email) {
-    return this.request('/auth/check-email', {
-      method: 'POST',
-      body: JSON.stringify({ email })
+  // User profile methods
+  async getProfile() {
+    return this.request('/auth/me');
+  }
+
+  async updateProfile(profileData) {
+    return this.request('/auth/update-profile', {
+      method: 'PUT',
+      body: JSON.stringify(profileData),
     });
   }
 
-  async checkPhoneExists(phoneNumber) {
-    return this.request('/auth/check-phone', {
-      method: 'POST',
-      body: JSON.stringify({ phoneNumber })
-    });
+  // Membership methods
+  async getMembershipPlans() {
+    return this.request('/membership/plans');
   }
 
-  async sendOtp(email) {
-    return this.request('/auth/send-otp', {
-      method: 'POST',
-      body: JSON.stringify({ email })
-    });
-  }
-
-  async verifyOtp(email, otp) {
-    return this.request('/auth/verify-otp', {
-      method: 'POST',
-      body: JSON.stringify({ email, otp })
-    });
-  }
-
-  // GitHub OAuth
-  getGitHubAuthUrl() {
-    return `${this.baseURL}/auth/github`;
-  }
-
-  // Handle GitHub OAuth callback
-  handleGitHubCallback(token) {
-    if (token) {
-      this.setToken(token);
-      return true;
-    }
-    return false;
-  }
-
-  // Check if user is authenticated
-  isAuthenticated() {
-    const token = this.getToken();
-    if (!token) return false;
-
-    try {
-      // Check if token is expired (basic check)
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const currentTime = Date.now() / 1000;
-      return payload.exp > currentTime;
-    } catch {
-      this.removeToken();
-      return false;
-    }
-  }
-
-  // Update membership details
-  async updateMembershipDetails(membershipDetails) {
+  async updateMembership(membershipData) {
     return this.request('/auth/update-membership', {
       method: 'POST',
-      body: JSON.stringify({ membershipDetails })
+      body: JSON.stringify(membershipData),
     });
   }
 
-  // Update booking details
-  async updateBookingDetails(bookingDetails) {
+  // Booking methods
+  async createBooking(bookingData) {
     return this.request('/auth/update-booking', {
       method: 'POST',
-      body: JSON.stringify({ bookingDetails })
+      body: JSON.stringify(bookingData),
     });
   }
 
-  // Complete payment
-  async completePayment(paymentId, paymentStatus) {
+  async getBookings() {
+    return this.request('/bookings');
+  }
+
+  async cancelBooking(bookingId) {
+    return this.request(`/bookings/${bookingId}/cancel`, {
+      method: 'POST',
+    });
+  }
+
+  // Payment methods
+  async processPayment(paymentData) {
     return this.request('/auth/complete-payment', {
       method: 'POST',
-      body: JSON.stringify({ paymentId, paymentStatus })
+      body: JSON.stringify(paymentData),
     });
   }
 
-  // Health check
-  async healthCheck() {
+  async getPaymentHistory() {
+    return this.request('/payments/history');
+  }
+
+  // Utility methods
+  async checkHealth() {
     return this.request('/health');
+  }
+
+  async checkEmailAvailability(email) {
+    return this.request('/auth/check-email', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  }
+
+  async checkPhoneAvailability(phone) {
+    return this.request('/auth/check-phone', {
+      method: 'POST',
+      body: JSON.stringify({ phone }),
+    });
   }
 }
 

@@ -1,225 +1,89 @@
-// Pricing data extracted from CSV
-export const pricingData = {
-  // 1 day pricing
-  "1 Day": {
-    "Dyandhara Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 79,
-      "Day Batch (7:00 AM - 10:00 PM)": 99,
-      "24 Hours Batch": 149
-    },
-    "Dyanpurn Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 149,
-      "Day Batch (7:00 AM - 10:00 PM)": 199,
-      "24 Hours Batch": 299
-    }
+// Pricing structure for membership plans
+export const pricingPlans = {
+  basic: {
+    id: 'basic',
+    name: 'Basic Plan',
+    price: 999,
+    duration: 30, // days
+    features: [
+      'Access to basic gym equipment',
+      'Locker facility',
+      'Basic fitness consultation'
+    ],
+    description: 'Perfect for beginners starting their fitness journey'
   },
-  
-  // 8 days pricing
-  "8 Days": {
-    "Dyandhara Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 299,
-      "Day Batch (7:00 AM - 10:00 PM)": 399,
-      "24 Hours Batch": 599
-    },
-    "Dyanpurn Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 349,
-      "Day Batch (7:00 AM - 10:00 PM)": 499,
-      "24 Hours Batch": 699
-    }
+  premium: {
+    id: 'premium',
+    name: 'Premium Plan',
+    price: 1999,
+    duration: 30, // days
+    features: [
+      'Access to all gym equipment',
+      'Personal trainer sessions (2/month)',
+      'Nutrition consultation',
+      'Locker facility',
+      'Group fitness classes'
+    ],
+    description: 'Comprehensive fitness solution for serious fitness enthusiasts'
   },
-  
-  // 15 days pricing
-  "15 Days": {
-    "Dyandhara Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 599,
-      "Day Batch (7:00 AM - 10:00 PM)": 699,
-      "24 Hours Batch": 999
-    },
-    "Dyanpurn Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 849,
-      "Day Batch (7:00 AM - 10:00 PM)": 1199,
-      "24 Hours Batch": 1799
-    }
-  },
-  
-  // Monthly pricing
-  "1 Month": {
-    "Dyandhara Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 799,
-      "Day Batch (7:00 AM - 10:00 PM)": 999,
-      "24 Hours Batch": 1499
-    },
-    "Dyanpurn Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 1399,
-      "Day Batch (7:00 AM - 10:00 PM)": 1999,
-      "24 Hours Batch": 2999
-    }
-  },
-  
-  "2 Months": {
-    "Dyandhara Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 1599,
-      "Day Batch (7:00 AM - 10:00 PM)": 1999,
-      "24 Hours Batch": 2999
-    },
-    "Dyanpurn Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 2799,
-      "Day Batch (7:00 AM - 10:00 PM)": 3999,
-      "24 Hours Batch": 5999
-    }
-  },
-  
-  "3 Months": {
-    "Dyandhara Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 2299,
-      "Day Batch (7:00 AM - 10:00 PM)": 2799,
-      "24 Hours Batch": 4499
-    },
-    "Dyanpurn Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 3499,
-      "Day Batch (7:00 AM - 10:00 PM)": 4999,
-      "24 Hours Batch": 7499
-    }
-  },
-  
-  "4 Months": {
-    "Dyandhara Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 2999,
-      "Day Batch (7:00 AM - 10:00 PM)": 3799,
-      "24 Hours Batch": 5999
-    },
-    "Dyanpurn Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 4999,
-      "Day Batch (7:00 AM - 10:00 PM)": 6999,
-      "24 Hours Batch": 9999
-    }
-  },
-  
-  "5 Months": {
-    "Dyandhara Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 3499,
-      "Day Batch (7:00 AM - 10:00 PM)": 4499,
-      "24 Hours Batch": 6999
-    },
-    "Dyanpurn Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 5999,
-      "Day Batch (7:00 AM - 10:00 PM)": 7999,
-      "24 Hours Batch": 11499
-    }
-  },
-  
-  "6 Months": {
-    "Dyandhara Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 3999,
-      "Day Batch (7:00 AM - 10:00 PM)": 4999,
-      "24 Hours Batch": 7499
-    },
-    "Dyanpurn Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 6499,
-      "Day Batch (7:00 AM - 10:00 PM)": 8999,
-      "24 Hours Batch": 12999
-    }
-  },
-  
-  "7 Months": {
-    "Dyandhara Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 4999,
-      "Day Batch (7:00 AM - 10:00 PM)": 5999,
-      "24 Hours Batch": 8999
-    },
-    "Dyanpurn Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 7499,
-      "Day Batch (7:00 AM - 10:00 PM)": 10499,
-      "24 Hours Batch": 14999
-    }
-  },
-  
-  "8 Months": {
-    "Dyandhara Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 5199,
-      "Day Batch (7:00 AM - 10:00 PM)": 6499,
-      "24 Hours Batch": 9999
-    },
-    "Dyanpurn Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 7499,
-      "Day Batch (7:00 AM - 10:00 PM)": 10999,
-      "24 Hours Batch": 15999
-    }
-  },
-  
-  "9 Months": {
-    "Dyandhara Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 5599,
-      "Day Batch (7:00 AM - 10:00 PM)": 6999,
-      "24 Hours Batch": 10999
-    },
-    "Dyanpurn Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 7999,
-      "Day Batch (7:00 AM - 10:00 PM)": 11499,
-      "24 Hours Batch": 16999
-    }
-  },
-  
-  "10 Months": {
-    "Dyandhara Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 5999,
-      "Day Batch (7:00 AM - 10:00 PM)": 7499,
-      "24 Hours Batch": 11499
-    },
-    "Dyanpurn Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 8499,
-      "Day Batch (7:00 AM - 10:00 PM)": 11999,
-      "24 Hours Batch": 17499
-    }
-  },
-  
-  "11 Months": {
-    "Dyandhara Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 6499,
-      "Day Batch (7:00 AM - 10:00 PM)": 7999,
-      "24 Hours Batch": 12499
-    },
-    "Dyanpurn Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 8999,
-      "Day Batch (7:00 AM - 10:00 PM)": 12499,
-      "24 Hours Batch": 17999
-    }
-  },
-  
-  "12 Months": {
-    "Dyandhara Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 6999,
-      "Day Batch (7:00 AM - 10:00 PM)": 8499,
-      "24 Hours Batch": 12999
-    },
-    "Dyanpurn Kaksh": {
-      "Night Batch (10:00 PM - 7:00 AM)": 9499,
-      "Day Batch (7:00 AM - 10:00 PM)": 12999,
-      "24 Hours Batch": 18999
-    }
+  elite: {
+    id: 'elite',
+    name: 'Elite Plan',
+    price: 2999,
+    duration: 30, // days
+    features: [
+      'All Premium features',
+      'Unlimited personal trainer sessions',
+      'Customized diet plans',
+      'Priority booking',
+      'Spa and wellness access',
+      'Guest passes (2/month)'
+    ],
+    description: 'Ultimate fitness experience with premium amenities'
   }
 };
 
-// Helper function to get price
-export const getPrice = (duration, membershipType, timeSlot) => {
-  return pricingData[duration]?.[membershipType]?.[timeSlot] || 0;
+// Duration-based pricing multipliers
+export const durationMultipliers = {
+  30: 1.0,    // 1 month - base price
+  90: 0.9,    // 3 months - 10% discount
+  180: 0.8,   // 6 months - 20% discount
+  365: 0.7    // 1 year - 30% discount
+};
+
+// Get pricing for a specific plan and duration
+export const getPricing = (planId, duration = 30) => {
+  const plan = pricingPlans[planId];
+  if (!plan) return null;
+  
+  const multiplier = durationMultipliers[duration] || 1.0;
+  const basePrice = plan.price;
+  const totalPrice = Math.round(basePrice * multiplier * (duration / 30));
+  
+  return {
+    ...plan,
+    duration,
+    basePrice,
+    multiplier,
+    totalPrice,
+    savings: duration > 30 ? Math.round(basePrice * (duration / 30) - totalPrice) : 0
+  };
 };
 
 // Get all available durations
 export const getAvailableDurations = () => {
-  return Object.keys(pricingData);
+  return Object.keys(durationMultipliers).map(duration => ({
+    value: parseInt(duration),
+    label: getDurationLabel(parseInt(duration)),
+    discount: Math.round((1 - durationMultipliers[duration]) * 100)
+  }));
 };
 
-// Get all membership types
-export const getMembershipTypes = () => {
-  return ["Dyandhara Kaksh", "Dyanpurn Kaksh"];
-};
-
-// Get all time slots
-export const getTimeSlots = () => {
-  return [
-    "Night Batch (10:00 PM - 7:00 AM)",
-    "Day Batch (7:00 AM - 10:00 PM)",
-    "24 Hours Batch"
-  ];
+// Helper function to get duration label
+export const getDurationLabel = (duration) => {
+  if (duration === 30) return '1 Month';
+  if (duration === 90) return '3 Months';
+  if (duration === 180) return '6 Months';
+  if (duration === 365) return '1 Year';
+  return `${duration} Days`;
 };
